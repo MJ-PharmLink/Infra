@@ -33,3 +33,18 @@ output "security_group_ids" {
     rds = aws_security_group.rds.id
   }
 }
+
+output "ecr_repository_name" {
+  description = "Backend GitHub Actions Variables: ECR_REPOSITORY"
+  value       = aws_ecr_repository.backend.name
+}
+
+output "ecr_repository_url" {
+  description = "이미지 주소 (ecs.tf task definition, 수동 push)"
+  value       = aws_ecr_repository.backend.repository_url
+}
+
+output "ssm_app_parameter_names" {
+  description = "비밀값 파라미터 이름 (put-parameter로 실제 값 입력)"
+  value       = [for p in aws_ssm_parameter.app : p.name]
+}
