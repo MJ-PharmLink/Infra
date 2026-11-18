@@ -8,3 +8,28 @@ output "name_prefix" {
   description = "리소스 이름 접두어"
   value       = local.name_prefix
 }
+
+# ---------- 네트워크 (ecs.tf, alb.tf, rds.tf에서 같은 값을 쓰고, 콘솔에서 찾을 때 참고) ----------
+output "vpc_id" {
+  description = "VPC ID"
+  value       = aws_vpc.main.id
+}
+
+output "public_subnet_ids" {
+  description = "Public subnet ID (ALB, ECS task)"
+  value       = [for s in aws_subnet.public : s.id]
+}
+
+output "private_subnet_ids" {
+  description = "Private subnet ID (RDS)"
+  value       = [for s in aws_subnet.private : s.id]
+}
+
+output "security_group_ids" {
+  description = "보안그룹 ID"
+  value = {
+    alb = aws_security_group.alb.id
+    ecs = aws_security_group.ecs.id
+    rds = aws_security_group.rds.id
+  }
+}
