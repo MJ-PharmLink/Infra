@@ -65,7 +65,9 @@ aws sts get-caller-identity   # 계정 ID가 나오면 성공
 
 ```bash
 git clone git@github.com:MJ-PharmLink/Infra.git
-cd Infra/terraform
+cd Infra
+git switch dev
+cd terraform
 cp terraform.tfvars.example terraform.tfvars
 terraform init
 ```
@@ -76,8 +78,9 @@ terraform init
 2. push 전에 `terraform fmt -recursive`, `terraform validate`, `terraform plan`을 실행합니다.
 3. PR 본문에 `terraform plan` 결과를 붙입니다. CI(`infra-ci`)는 fmt·validate만 검사하고 AWS에는 접속하지 않습니다.
 4. 상대방이 plan을 확인하고 승인하면 머지합니다. RDS에 `-/+`(삭제 후 재생성)가 보이면 멈추고 같이 확인합니다.
-5. **apply는 머지된 `main`을 pull 한 뒤에만** 실행합니다. 상태 파일 잠금(`use_lockfile`) 때문에 동시에 apply 하면 한쪽이 기다립니다.
+5. **apply는 머지된 `dev`를 pull 한 뒤에만** 실행합니다. AWS 환경(prod)이 하나뿐이라 apply하는 브랜치도 `dev` 하나로 정합니다. 상태 파일 잠금(`use_lockfile`) 때문에 동시에 apply 하면 한쪽이 기다립니다.
 6. 콘솔에서 Terraform이 만든 리소스를 직접 고치지 않습니다. 다음 plan이 되돌리려고 합니다.
+7. `main`은 안정된 시점(발표 전 등)에 `dev` → `main` PR로 맞춥니다.
 
 ## 켜기·끄기
 
