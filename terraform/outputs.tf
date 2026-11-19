@@ -48,3 +48,14 @@ output "ssm_app_parameter_names" {
   description = "비밀값 파라미터 이름 (put-parameter로 실제 값 입력)"
   value       = [for p in aws_ssm_parameter.app : p.name]
 }
+
+# ---------- ALB (cdn.tf의 CloudFront origin, ecs.tf의 load_balancer 블록에서 사용) ----------
+output "alb_dns_name" {
+  description = "ALB DNS name (CloudFront /api/* origin)"
+  value       = aws_lb.main.dns_name
+}
+
+output "alb_target_group_arn" {
+  description = "Backend target group ARN (ecs.tf load_balancer)"
+  value       = aws_lb_target_group.backend.arn
+}
