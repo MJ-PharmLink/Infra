@@ -59,3 +59,24 @@ output "alb_target_group_arn" {
   description = "Backend target group ARN (ecs.tf load_balancer)"
   value       = aws_lb_target_group.backend.arn
 }
+
+# ---------- RDS (ecs.tf task definition의 DB 접속 정보) ----------
+output "db_endpoint" {
+  description = "RDS address (host only)"
+  value       = aws_db_instance.main.address
+}
+
+output "db_jdbc_url" {
+  description = "ECS env DB_URL"
+  value       = "jdbc:mysql://${aws_db_instance.main.address}:${local.db_port}/${local.db_name}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+}
+
+output "db_username" {
+  description = "ECS env SPRING_DATASOURCE_USERNAME"
+  value       = local.db_username
+}
+
+output "db_password_parameter_arn" {
+  description = "ECS secrets SPRING_DATASOURCE_PASSWORD valueFrom"
+  value       = aws_ssm_parameter.db_password.arn
+}
