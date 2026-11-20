@@ -46,8 +46,9 @@ resource "aws_ecs_task_definition" "backend" {
       environment = [
         { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
         { name = "TZ", value = "Asia/Seoul" },
-        # { name = "DB_URL", value = "jdbc:mysql://${aws_db_instance.<A이름>.address}:${local.db_port}/${local.db_name}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8" },
-        # { name = "SPRING_DATASOURCE_USERNAME", value = aws_db_instance.<A이름>.username },
+        # RDS 접속 정보 (rds.tf). 비밀번호는 아래 secrets에서 SSM으로 넣는다
+        { name = "DB_URL", value = local.db_jdbc_url },
+        { name = "SPRING_DATASOURCE_USERNAME", value = aws_db_instance.main.username },
       ]
 
       # Parameter Store → 환경변수 (task 시작 때 주입)
@@ -55,6 +56,7 @@ resource "aws_ecs_task_definition" "backend" {
         { name = "JWT_SECRET", valueFrom = aws_ssm_parameter.app["JWT_SECRET"].arn },
         { name = "ADMIN_USERNAME", valueFrom = aws_ssm_parameter.app["ADMIN_USERNAME"].arn },
         { name = "ADMIN_PASSWORD", valueFrom = aws_ssm_parameter.app["ADMIN_PASSWORD"].arn },
+        { name = "SPRING_DATASOURCE_PASSWORD", valueFrom = aws_ssm_parameter.db_password.arn }, # rds.tf가 만든 DB 비밀번호
       ]
 
       logConfiguration = {
