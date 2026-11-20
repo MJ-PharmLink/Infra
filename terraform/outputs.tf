@@ -80,3 +80,23 @@ output "db_password_parameter_arn" {
   description = "ECS secrets SPRING_DATASOURCE_PASSWORD valueFrom"
   value       = aws_ssm_parameter.db_password.arn
 }
+
+# ---------- ECS (백엔드 GitHub Actions Variables) ----------
+output "ecs_cluster" {
+  description = "Backend Variables : ECS_CLUSTER"
+  value       = aws_ecs_cluster.main.name
+}
+output "ecs_service" {
+  description = "Backend Variables : ECS_SERVICE"
+  value       = aws_ecs_service.backend.name
+}
+
+output "ecs_task_family" {
+  description = "Backend Variables : ECS_TASK_FAMILY"
+  value       = aws_ecs_task_definition.backend.family
+}
+
+output "container_name" {
+  description = "Backend Variables : CONTAINER_NAME"
+  value       = local.backend_container_name
+}
