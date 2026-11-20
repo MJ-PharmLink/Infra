@@ -68,7 +68,7 @@ output "db_endpoint" {
 
 output "db_jdbc_url" {
   description = "ECS env DB_URL"
-  value       = "jdbc:mysql://${aws_db_instance.main.address}:${local.db_port}/${local.db_name}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+  value       = local.db_jdbc_url
 }
 
 output "db_username" {

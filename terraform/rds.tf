@@ -13,6 +13,9 @@
 locals {
   db_username         = "pharmlink" # 마스터 사용자 이름 
   db_password_version = 1           # 비밀번호를 새로 만들어 넣고 싶을 때만 올린다
+
+  # 백엔드 application.yaml의 기본 DB_URL과 같은 옵션, 호스트만 RDS 주소로 바꾼다 (ecs.tf, outputs.tf에서 사용)
+  db_jdbc_url = "jdbc:mysql://${aws_db_instance.main.address}:${local.db_port}/${local.db_name}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
 }
 
 # ---------- 1) 무작위 비밀번호 (apply 하는 동안에만 메모리에 있고 state에는 남지 않는다) ----------
