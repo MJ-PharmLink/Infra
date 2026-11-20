@@ -100,3 +100,19 @@ output "container_name" {
   description = "Backend Variables : CONTAINER_NAME"
   value       = local.backend_container_name
 }
+
+# ---------- CDN (프론트 업로드, 캐시 무효화) ----------
+output "frontend_bucket_name" {
+  description = "프론트 빌드 파일 업로드 버킷"
+  value       = aws_s3_bucket.frontend.bucket
+}
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront 배포 ID (캐시 무효화)"
+  value       = aws_cloudfront_distribution.main.id
+}
+
+output "site_url" {
+  description = "접속 주소"
+  value       = "https://${aws_cloudfront_distribution.main.domain_name}"
+}
