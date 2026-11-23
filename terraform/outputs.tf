@@ -127,3 +127,14 @@ output "github_frontend_role_arn" {
   description = "Frontend Variables : AWS_ROLE_ARN"
   value       = aws_iam_role.github_frontend.arn
 }
+
+# ---------- 모니터링 ----------
+output "alerts_topic_arn" {
+  description = "알람 메일을 보내는 SNS 주제"
+  value       = aws_sns_topic.alerts.arn
+}
+
+output "cloudtrail_bucket_name" {
+  description = "CloudTrail 기록이 쌓이는 S3 버킷"
+  value       = aws_s3_bucket.cloudtrail.id
+}

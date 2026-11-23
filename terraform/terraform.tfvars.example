@@ -4,3 +4,6 @@ project     = "pharmlink"
 environment = "prod"
 aws_region  = "ap-northeast-2"
 github_org  = "MJ-PharmLink"
+
+# CloudWatch 알람 메일 받을 주소 (필수, 여러 개 가능)
+alert_emails = ["me@example.com"]
