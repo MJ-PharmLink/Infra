@@ -28,3 +28,12 @@ variable "backend_image_tag" {
   # 2일차에 push한 태그가 다르면 이 값만 그 7자리로 바꾼다 (비밀값 아님).
   default = "89b15c7"
 }
+variable "alert_emails" {
+  description = "CloudWatch 알람 메일을 받을 주소 목록 (terraform.tfvars 에만 적는다. git에 올리지 않음)"
+  type        = list(string)
+
+  validation {
+    condition     = alltrue([for e in var.alert_emails : can(regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", e))])
+    error_message = "alert_emails 에는 메일 주소 형식만 넣을 수 있습니다."
+  }
+}
