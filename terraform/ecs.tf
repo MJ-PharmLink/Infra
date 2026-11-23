@@ -107,6 +107,10 @@ resource "aws_ecs_service" "backend" {
   depends_on = [aws_lb_listener.http]
 
   lifecycle {
-    ignore_changes = [desired_count]
+    # desired_count   : 켜고 끄기는 scripts/start.sh·stop.sh가 CLI로 바꾼다
+    # task_definition : 배포 후 새 버전은 GitHub Actions(백엔드 deploy.yml)가 등록·교체한다.
+    #                   무시하지 않으면 terraform apply가 서비스를 variables.tf의 옛 이미지 태그로 되돌린다.
+    #                   (이 파일에서 환경변수 등을 바꾸면 새 revision은 만들어지지만, 서비스에는 다음 백엔드 배포 때 반영된다)
+    ignore_changes = [task_definition, desired_count]
   }
 }

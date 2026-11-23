@@ -116,3 +116,14 @@ output "site_url" {
   description = "접속 주소"
   value       = "https://${aws_cloudfront_distribution.main.domain_name}"
 }
+
+# ---------- GitHub OIDC (각 저장소 Actions Variables : AWS_ROLE_ARN) ----------
+output "github_backend_role_arn" {
+  description = "Backend Variables : AWS_ROLE_ARN"
+  value       = aws_iam_role.github_backend.arn
+}
+
+output "github_frontend_role_arn" {
+  description = "Frontend Variables : AWS_ROLE_ARN"
+  value       = aws_iam_role.github_frontend.arn
+}
