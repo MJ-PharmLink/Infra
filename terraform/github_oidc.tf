@@ -16,14 +16,21 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 locals {
   github_oidc_host = "token.actions.githubusercontent.com"
+
+  # GitHub가 보내는 신분증(sub)에는 조직·저장소 이름 뒤에 "@고유 ID"가 붙어 온다
+  #   예) repo:MJ-PharmLink@330256268/Frontend@1373907648:ref:refs/heads/main
+  # 이름은 지웠다가 같은 이름으로 다시 만들 수 있지만 ID는 새로 생기므로,
+  # 저장소·조직이 지워진 뒤 누가 같은 이름으로 만들어도 이 역할을 빌릴 수 없다
+  github_org_id = "330256268"
+  github_repos = {
+    backend  = { name = "Backend", id = "1373907970" }
+    frontend = { name = "Frontend", id = "1373907648" }
+  }
 }
 
 # ---------- 2) 신뢰 정책 : 누가 역할을 빌릴 수 있는가 (저장소·브랜치로 제한) ----------
 data "aws_iam_policy_document" "github_assume" {
-  for_each = {
-    backend  = "Backend"
-    frontend = "Frontend"
-  }
+  for_each = local.github_repos
 
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -39,11 +46,11 @@ data "aws_iam_policy_document" "github_assume" {
       values   = ["sts.amazonaws.com"]
     }
 
-    # sub = "repo:<조직>/<저장소>:ref:refs/heads/main" → 이 저장소의 main 브랜치에서 돈 워크플로만 허용
+    # sub = "repo:<조직>@<조직ID>/<저장소>@<저장소ID>:ref:refs/heads/main" → 이 저장소의 main 브랜치에서 돈 워크플로만 허용
     condition {
       test     = "StringEquals"
       variable = "${local.github_oidc_host}:sub"
-      values   = ["repo:${var.github_org}/${each.value}:ref:refs/heads/main"]
+      values   = ["repo:${var.github_org}@${local.github_org_id}/${each.value.name}@${each.value.id}:ref:refs/heads/main"]
     }
   }
 }
