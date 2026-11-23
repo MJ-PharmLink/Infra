@@ -123,15 +123,17 @@ locals {
       dimensions         = { DBInstanceIdentifier = aws_db_instance.main.identifier }
     }
     rds-memory-low = {
-      description        = "DB 여유 메모리가 15분 동안 100MB 미만"
+      description        = "DB 여유 메모리가 15분 동안 50MB 미만"
       namespace          = "AWS/RDS"
       metric_name        = "FreeableMemory"
       statistic          = "Average"
       period             = 300
       evaluation_periods = 3
       comparison         = "LessThanThreshold"
-      threshold          = 100 * 1024 * 1024 # 바이트 단위
-      dimensions         = { DBInstanceIdentifier = aws_db_instance.main.identifier }
+      # MySQL은 메모리의 약 3/4를 캐시(InnoDB buffer pool)로 미리 잡아서, 1GB인 t4g.micro는 평소에도 여유가 100MB 안팎이다.
+      # 100MB로 두면 정상인데도 울려서 50MB로 낮춘다
+      threshold  = 50 * 1024 * 1024 # 바이트 단위
+      dimensions = { DBInstanceIdentifier = aws_db_instance.main.identifier }
     }
   }
 }
