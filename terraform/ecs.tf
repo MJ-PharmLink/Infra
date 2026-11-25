@@ -57,6 +57,7 @@ resource "aws_ecs_task_definition" "backend" {
         { name = "ADMIN_USERNAME", valueFrom = aws_ssm_parameter.app["ADMIN_USERNAME"].arn },
         { name = "ADMIN_PASSWORD", valueFrom = aws_ssm_parameter.app["ADMIN_PASSWORD"].arn },
         { name = "SPRING_DATASOURCE_PASSWORD", valueFrom = aws_ssm_parameter.db_password.arn }, # rds.tf가 만든 DB 비밀번호
+        { name = "GEMINI_API_KEY", valueFrom = aws_ssm_parameter.app["GEMINI_API_KEY"].arn },
       ]
 
       logConfiguration = {
