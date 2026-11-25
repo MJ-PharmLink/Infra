@@ -1,0 +1,33 @@
+name: infra-ci
+
+on:
+  # dev·main으로 가는 모든 PR에서 실행 (필수 검사로 걸어 두므로 README만 바꾼 PR에서도 돌아야 한다)
+  pull_request:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.x"
+
+      # 코드 모양 검사 (실패하면 로컬에서 terraform fmt -recursive 후 다시 push)
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+
+      # AWS에 접속하지 않고 문법·참조만 검사한다 (state 버킷도 읽지 않음)
+      - name: terraform init
+        run: terraform init -backend=false -input=false
+
+      - name: terraform validate
+        run: terraform validate
