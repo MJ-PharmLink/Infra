@@ -21,7 +21,7 @@ locals {
 }
 
 resource "aws_ssm_parameter" "app" {
-  for_each = toset(["JWT_SECRET", "ADMIN_USERNAME", "ADMIN_PASSWORD"])
+  for_each = toset(["JWT_SECRET", "ADMIN_USERNAME", "ADMIN_PASSWORD", "GEMINI_API_KEY"])
 
   name             = "${local.ssm_prefix}/${each.key}"
   type             = "SecureString"
